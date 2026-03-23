@@ -58,8 +58,9 @@ jobs:
           echo "Before fix:"
           ls -R
 
-          if [ ! -d "mlruns" ] && [ -d "0" ]; then
-            mkdir mlruns
+          # لو mlruns artifact نزل كـ root (0 مباشرة)
+          if [ -d "0" ]; then
+            mkdir -p mlruns
             mv 0 mlruns/
           fi
 
@@ -74,7 +75,7 @@ jobs:
 
       - name: Check threshold
         env:
-          MLFLOW_TRACKING_URI: file:./mlruns
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }} 
         run: python check_threshold.py
 
       - name: Mock Docker
