@@ -1,7 +1,7 @@
 import mlflow
 
 mlflow.set_tracking_uri("file:./mlruns")
-
+mlflow.set_experiment("Mlops Assignment5")  
 with open("model_info.txt", "r") as f:
     run_id = f.read().strip()
 
