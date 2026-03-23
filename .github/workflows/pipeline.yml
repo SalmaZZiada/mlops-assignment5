@@ -58,12 +58,13 @@ jobs:
           echo "Before fix:"
           ls -R
 
-          if [ -d "mlruns/mlruns" ]; then
-            mv mlruns/mlruns/* mlruns/
+          if [ ! -d "mlruns" ] && [ -d "0" ]; then
+            mkdir mlruns
+            mv 0 mlruns/
           fi
 
           echo "After fix:"
-          ls -R mlruns
+          ls -R
 
       - uses: actions/setup-python@v4
         with:
