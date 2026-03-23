@@ -19,8 +19,6 @@ jobs:
       - run: dvc pull
 
       - name: Train
-        env:
-          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
         run: python train.py
 
       - name: Upload model info
@@ -75,7 +73,7 @@ jobs:
 
       - name: Check threshold
         env:
-          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }} 
+          MLFLOW_TRACKING_URI: file:./mlruns
         run: python check_threshold.py
 
       - name: Mock Docker
