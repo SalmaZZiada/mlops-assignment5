@@ -1,0 +1,58 @@
+name: mlops-pipeline
+
+on: [push]
+
+jobs:
+
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: pip install torch pandas numpy mlflow dvc
+
+      - run: dvc pull
+
+      - name: Train
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        run: python train.py
+
+      - name: Upload model info
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-info
+          path: model_info.txt
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download model info
+        uses: actions/download-artifact@v4
+        with:
+          name: model-info
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: pip install mlflow
+
+      - name: Check threshold
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        run: python check_threshold.py
+
+      - name: Mock Docker
+        run: |
+          echo "Building Docker image for Run ID: $(cat model_info.txt)"
