@@ -53,11 +53,17 @@ jobs:
         with:
           name: mlruns
 
-      - name: Fix mlruns folder
+      - name: Fix mlruns structure
         run: |
+          echo "Before fix:"
+          ls -R
+
           if [ -d "mlruns/mlruns" ]; then
             mv mlruns/mlruns/* mlruns/
           fi
+
+          echo "After fix:"
+          ls -R mlruns
 
       - uses: actions/setup-python@v4
         with:
@@ -66,6 +72,8 @@ jobs:
       - run: pip install mlflow
 
       - name: Check threshold
+        env:
+          MLFLOW_TRACKING_URI: file:./mlruns
         run: python check_threshold.py
 
       - name: Mock Docker
