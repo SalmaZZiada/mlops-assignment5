@@ -9,7 +9,7 @@ import mlflow
 import mlflow.pytorch
 
 mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
-mlflow.set_experiment("Mlops Assignment5")
+mlflow.set_experiment("Mlops-Assignment5")
 seed = 42
 torch.manual_seed(seed)
 np.random.seed(seed)
